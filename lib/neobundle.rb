@@ -1,5 +1,8 @@
 require "neobundle/version"
 
 module NeoBundle
-  # Your code goes here...
+  class Error < StandardError; end
+  class VimscriptError < Error; end
 end
+
+require 'neobundle/vimscript'
