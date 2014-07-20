@@ -1,3 +1,5 @@
+require 'neobundle/vimscript'
+
 module NeoBundle
   class Runner
     attr_reader :script

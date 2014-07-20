@@ -1,11 +1,14 @@
-require "neobundle/version"
+require 'neobundle/version'
+require 'rake/pathmap'
 
 module NeoBundle
-  class Error < StandardError; end
-  class VimscriptError < Error; end
-  class NeoBundleNotFoundError < Error; end
-  class OperationAlreadyCompletedError < Error; end
+  class Error < StandardError; def status; 1 end end
+  class VimscriptError < Error; def status; 2 end end
+  class NeoBundleNotFoundError < Error; def status; 3 end end
+  class OperationAlreadyCompletedError < Error; def status; 4 end end
+  class CommandLineError < Error; def status; 5 end end
 end
 
-require 'neobundle/vimscript'
-require 'neobundle/runner'
+Dir['lib/neobundle/*.rb'].each do |rb|
+  require rb.pathmap('%-1d/%n')
+end
