@@ -22,6 +22,11 @@ module NeoBundle
         it { is_expected.to eq(command: :clean) }
       end
       
+      describe 'list command' do
+        let(:args){'list'}
+        it { is_expected.to eq(command: :list) }
+      end
+      
       describe 'help or version' do
         before { $stderr = $stdout = StringIO.new }
         after { $stderr = STDERR; $stdout = STDOUT }

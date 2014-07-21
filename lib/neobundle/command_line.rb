@@ -32,7 +32,7 @@ module NeoBundle
       opt.order!(args)
       command = args.shift.to_s.intern
       case command
-      when :install, :clean then
+      when :install, :clean, :list then
         @arguments = {command: command}
       when :'', :help then
         opt.parse(['--help'])

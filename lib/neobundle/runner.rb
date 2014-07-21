@@ -22,6 +22,10 @@ module NeoBundle
       end
     end
     
+    def list
+      @script.exec('NeoBundleList', $stdout)
+    end
+    
     def install
       dir = @script.exec('echo neobundle#get_neobundle_dir()')
       before = Dir['%s/*' % dir]
