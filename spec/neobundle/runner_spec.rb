@@ -57,7 +57,7 @@ module NeoBundle
         s = super()
         d = double('Vimscript')
         allow(d).to receive(:exec) do |cmd|
-          if cmd == 'NeoBundleClean' then
+          if cmd == 'NeoBundleClean!' then
             self.on_clean()
             ''
           else

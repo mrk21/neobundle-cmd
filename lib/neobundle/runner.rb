@@ -37,7 +37,7 @@ module NeoBundle
     def clean
       dir = @script.exec('echo neobundle#get_neobundle_dir()')
       before = Dir['%s/*' % dir]
-      @script.exec('NeoBundleClean', $stdout)
+      @script.exec('NeoBundleClean!', $stdout)
       after = Dir['%s/*' % dir]
       raise NeoBundle::OperationAlreadyCompletedError, 'Already cleaned!' if before == after
     end
