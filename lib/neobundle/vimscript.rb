@@ -10,51 +10,53 @@ module NeoBundle
       @config.merge!(config)
     end
     
-    def exec(cmd)
+    def exec(cmd, io=nil)
       raise NeoBundle::VimscriptError, 'Command is empty!' if cmd.to_s.strip.empty?
       config = @config.clone
       config[:vimrc] = '-u %s' % config[:vimrc] unless config[:vimrc].nil?
-      command = (<<-SH % config).gsub(/\s+/,' ')
+      command = (<<-SH % config).gsub(/\s+/,' ').strip
         %{vim} %{vimrc} -U NONE -i NONE -e -s -V1
           -c "
             try |
               echo '#{MARK}' |
               #{cmd} |
               echo '#{MARK}' |
-              echo '' |
             finally |
               q! |
             endtry
           "
           -c "
             echo '#{MARK}' |
-            echo '' |
             q
           "
       SH
       r,w = IO.pipe
       process = Process.detach spawn(command, out: w, err: w)
       
-      # The process surveillance.
       Thread.new do
-        sleep 0.01 while process.status
+        process.join
         r.close
         w.close
       end
       
-      # Read the command output.
-      result = ''
       begin
+        result = []
+        is_outputting = false
+        
         loop do
-          result += r.gets
+          line = r.gets.rstrip
+          if line == MARK then
+            is_outputting = !is_outputting
+          elsif is_outputting then
+            io.puts line unless io.nil?
+            result.push line
+          end
         end
       rescue IOError
+        result = result.join("\n")
+        raise NeoBundle::VimscriptError, result if process.value != 0
+        result
       end
-      
-      raise NeoBundle::VimscriptError, result if process.value != 0
-      r = result.split(/\r\n|\r|\n/)
-      r = r[(r.index(MARK)+1)..(r.rindex(MARK)-1)]
-      r.join("\n")
     end
   end
 end
