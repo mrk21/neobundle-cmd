@@ -27,13 +27,19 @@ module NeoBundle
     end
     
     def initialize(args=ARGV)
+      @arguments = {
+        command: nil,
+        config: {}
+      }
       opt = OptionParser.new
       opt.version = NeoBundle::VERSION
+      opt.on('--vim=<path>','Path to the vim command.'){|v| @arguments[:config][:vim] = v}
       opt.order!(args)
       command = args.shift.to_s.intern
       case command
       when :install, :clean, :list then
-        @arguments = {command: command}
+        @arguments[:command] = command
+        opt.parse!(args)
       when :'', :help then
         opt.parse(['--help'])
       else
@@ -44,7 +50,7 @@ module NeoBundle
     end
     
     def execute
-      runner = Runner.new
+      runner = Runner.new(self.arguments[:config])
       runner.send(self.arguments[:command])
     end
   end

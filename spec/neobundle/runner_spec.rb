@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module NeoBundle
   describe NeoBundle::Runner do
-    subject { Runner.new(self.script) }
+    subject { Runner.new({}, self.script) }
     
     let(:script){Vimscript.new(vimrc: './spec/fixtures/vimrc/with_neobundle.vim')}
     
@@ -86,12 +86,34 @@ module NeoBundle
     describe '::default_config([platform])' do
       subject { Runner.default_config(self.platform) }
       
+      before do
+        ENV['NEOBUNDLE_CMD_VIM'] = nil
+      end
+      
+      after do
+        ENV['NEOBUNDLE_CMD_VIM'] = nil
+      end
+      
       context 'when the platform was "Mac OS X"' do
         let(:platform){'x86_64-darwin13.0'}
         it do
           is_expected.to eq(
+            vim: 'vim',
             vimrc: File.expand_path('~/.vimrc')
           )
+        end
+        
+        context 'with options' do
+          before do
+            ENV['NEOBUNDLE_CMD_VIM'] = 'path/to/vim'
+          end
+          
+          it do
+            is_expected.to eq(
+              vim: 'path/to/vim',
+              vimrc: File.expand_path('~/.vimrc')
+            )
+          end
         end
       end
       
@@ -99,6 +121,7 @@ module NeoBundle
         let(:platform){'x86_64-linux'}
         it do
           is_expected.to eq(
+            vim: 'vim',
             vimrc: File.expand_path('~/.vimrc')
           )
         end
@@ -108,6 +131,7 @@ module NeoBundle
         let(:platform){'x64-mingw32'}
         it do
           is_expected.to eq(
+            vim: 'vim',
             vimrc: File.expand_path('~/_vimrc')
           )
         end

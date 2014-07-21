@@ -5,16 +5,19 @@ module NeoBundle
     attr_reader :script
     
     def self.default_config(platform = RUBY_PLATFORM)
+      config = {
+        vim: ENV['NEOBUNDLE_CMD_VIM'] || 'vim'
+      }
       case platform
       when /darwin/,/linux/ then
-        {vimrc: File.join(ENV['HOME'], '.vimrc')}
+        config.merge(vimrc: File.join(ENV['HOME'], '.vimrc'))
       when /mswin(?!ce)|mingw|cygwin|bccwin/ then
-        {vimrc: File.join(ENV['HOME'], '_vimrc')}
+        config.merge(vimrc: File.join(ENV['HOME'], '_vimrc'))
       end
     end
     
-    def initialize(script = Vimscript.new(self.class.default_config))
-      @script = script
+    def initialize(config={}, script=nil)
+      @script = script || Vimscript.new(self.class.default_config.merge(config))
       begin
         self.script.exec('NeoBundleList')
       rescue NeoBundle::VimscriptError

@@ -14,28 +14,40 @@ module NeoBundle
       
       describe 'install command' do
         let(:args){'install'}
-        it { is_expected.to eq(command: :install) }
+        it { is_expected.to eq(command: :install, config: {}) }
       end
       
       describe 'clean command' do
         let(:args){'clean'}
-        it { is_expected.to eq(command: :clean) }
+        it { is_expected.to eq(command: :clean, config: {}) }
       end
       
       describe 'list command' do
         let(:args){'list'}
-        it { is_expected.to eq(command: :list) }
+        it { is_expected.to eq(command: :list, config: {}) }
       end
       
       describe 'help or version' do
         before { $stderr = $stdout = StringIO.new }
         after { $stderr = STDERR; $stdout = STDOUT }
         
-        ['', 'help', '--help', '-h', '--version', '-v'].each do |args|
+        ['', 'help', '--help', '-h', '--version'].each do |args|
           describe '"%s"' % args do
             let(:args){args}
             it { expect{subject}.to raise_error(SystemExit) }
           end
+        end
+      end
+      
+      describe 'options' do
+        let(:args){'--vim=path1 install --vim=path2'}
+        it do
+          is_expected.to eq(
+            command: :install,
+            config: {
+              vim: 'path2'
+            }
+          )
         end
       end
       
