@@ -23,17 +23,19 @@ module NeoBundle
     end
     
     def install
-      result = @script.exec('NeoBundleInstall')
-      result = result.split(/\n|\r\n/)
-      result = result.find{|v| v == '[neobundle/install] Target bundles not found.'}
-      raise NeoBundle::OperationAlreadyCompletedError, 'Already installed!' unless result.nil?
+      dir = @script.exec('echo neobundle#get_neobundle_dir()')
+      before = Dir['%s/*' % dir]
+      @script.exec('NeoBundleInstall', $stdout)
+      after = Dir['%s/*' % dir]
+      raise NeoBundle::OperationAlreadyCompletedError, 'Already installed!' if before == after
     end
     
     def clean
-      result = @script.exec('NeoBundleClean')
-      result = result.split(/\n|\r\n/)
-      result = result.find{|v| v == '[neobundle/install] All clean!'}
-      raise NeoBundle::OperationAlreadyCompletedError, 'Already cleaned!' unless result.nil?
+      dir = @script.exec('echo neobundle#get_neobundle_dir()')
+      before = Dir['%s/*' % dir]
+      @script.exec('NeoBundleClean', $stdout)
+      after = Dir['%s/*' % dir]
+      raise NeoBundle::OperationAlreadyCompletedError, 'Already cleaned!' if before == after
     end
   end
 end

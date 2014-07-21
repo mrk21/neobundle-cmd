@@ -71,6 +71,12 @@ module NeoBundle
         let(:exception){raise NeoBundle::VimscriptError, 'VimscriptError message'}
         it { expect(subject[0]).to eq(2) }
         it { expect(subject[1]).to eq('VimscriptError message') }
+        
+        context 'when the `NeoBundle::Error` was thrown' do
+          let(:exception){raise NeoBundle::OperationAlreadyCompletedError, 'OperationAlreadyCompletedError'}
+          it { expect(subject[0]).to eq(4) }
+          it { expect(subject[1]).to eq('') }
+        end
       end
       
       context 'when the `SystemExit` was thrown' do

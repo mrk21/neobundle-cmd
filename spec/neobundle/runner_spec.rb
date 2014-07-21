@@ -25,19 +25,27 @@ module NeoBundle
       subject { super().install }
       
       let(:script) do
-        double('Vimscript', exec: self.result.split(/\n/).map{|v| v.strip}.join("\n"))
+        s = super()
+        d = double('Vimscript')
+        allow(d).to receive(:exec) do |cmd|
+          if cmd == 'NeoBundleInstall' then
+            self.on_install()
+            ''
+          else
+            s.exec(cmd)
+          end
+        end
+        d
       end
       
-      let(:result){''}
+      let(:on_install) do
+          File.write('./tmp/bundle/test.vim','')
+      end
       
       it { expect{subject}.to_not raise_error }
       
       context 'when installed nothing' do
-        let(:result){%[
-           message
-          [neobundle/install] Target bundles not found.
-          [neobundle/install] You may have used the wrong bundle name, or all of the bundles are already installed.
-        ]}
+        let(:on_install){}
         it { expect{subject}.to raise_error(NeoBundle::OperationAlreadyCompletedError, 'Already installed!') }
       end
     end
@@ -46,18 +54,31 @@ module NeoBundle
       subject { super().clean }
       
       let(:script) do
-        double('Vimscript', exec: self.result.split(/\n/).map{|v| v.strip}.join("\n"))
+        s = super()
+        d = double('Vimscript')
+        allow(d).to receive(:exec) do |cmd|
+          if cmd == 'NeoBundleClean' then
+            self.on_clean()
+            ''
+          else
+            s.exec(cmd)
+          end
+        end
+        d
       end
       
-      let(:result){''}
+      let(:on_clean) do
+        FileUtils.rm_f './tmp/bundle/test.vim'
+      end
+      
+      before do
+        File.write('./tmp/bundle/test.vim','')
+      end
       
       it { expect{subject}.to_not raise_error }
       
       context 'when deleted nothing' do
-        let(:result){%[
-          message
-          [neobundle/install] All clean!
-        ]}
+        let(:on_clean){}
         it { expect{subject}.to raise_error(NeoBundle::OperationAlreadyCompletedError, 'Already cleaned!') }
       end
     end

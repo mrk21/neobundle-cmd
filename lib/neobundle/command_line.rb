@@ -13,7 +13,7 @@ module NeoBundle
           self.new.execute
         end
       rescue NeoBundle::Error => e
-        $stderr.puts e.message
+        $stderr.puts e.message unless e.instance_of? NeoBundle::OperationAlreadyCompletedError
         exit e.status
       rescue SystemExit => e
         exit e.status
