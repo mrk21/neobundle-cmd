@@ -61,5 +61,36 @@ module NeoBundle
         it { expect{subject}.to raise_error(NeoBundle::OperationAlreadyCompletedError, 'Already cleaned!') }
       end
     end
+    
+    describe '::default_config([platform])' do
+      subject { Runner.default_config(self.platform) }
+      
+      context 'when the platform was "Mac OS X"' do
+        let(:platform){'x86_64-darwin13.0'}
+        it do
+          is_expected.to eq(
+            vimrc: File.expand_path('~/.vimrc')
+          )
+        end
+      end
+      
+      context 'when the platform was "Linux"' do
+        let(:platform){'x86_64-linux'}
+        it do
+          is_expected.to eq(
+            vimrc: File.expand_path('~/.vimrc')
+          )
+        end
+      end
+      
+      context 'when the platform was "Windows"' do
+        let(:platform){'x64-mingw32'}
+        it do
+          is_expected.to eq(
+            vimrc: File.expand_path('~/_vimrc')
+          )
+        end
+      end
+    end
   end
 end

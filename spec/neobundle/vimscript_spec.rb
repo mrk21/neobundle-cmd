@@ -3,7 +3,7 @@ require 'stringio'
 
 module NeoBundle
   describe NeoBundle::Vimscript do
-    subject { Vimscript.new(vimrc: 'NONE') }
+    subject { Vimscript.new }
     
     describe '#exec(cmd[, io])' do
       subject { super().exec(self.cmd, self.io) }

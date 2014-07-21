@@ -5,28 +5,28 @@ module NeoBundle
     def initialize(config={})
       @config = {
         vim: 'vim',
-        vimrc: nil
+        vimrc: 'NONE',
       }
       @config.merge!(config)
     end
     
     def exec(cmd, io=nil)
       raise NeoBundle::VimscriptError, 'Command is empty!' if cmd.to_s.strip.empty?
-      config = @config.clone
-      config[:vimrc] = '-u %s' % config[:vimrc] unless config[:vimrc].nil?
-      command = (<<-SH % config).gsub(/\s+/,' ').strip
-        %{vim} %{vimrc} -U NONE -i NONE -e -s -V1
+      command = (<<-SH % @config).gsub(/\s+/,' ').strip
+        %{vim} -u %{vimrc} -U NONE -i NONE -e -s -V1
           -c "
             try |
               echo '#{MARK}' |
               #{cmd} |
               echo '#{MARK}' |
+              echo '' |
             finally |
               q! |
             endtry
           "
           -c "
             echo '#{MARK}' |
+            echo '' |
             q
           "
       SH

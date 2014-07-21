@@ -4,7 +4,16 @@ module NeoBundle
   class Runner
     attr_reader :script
     
-    def initialize(script = Vimscript.new)
+    def self.default_config(platform = RUBY_PLATFORM)
+      case platform
+      when /darwin/,/linux/ then
+        {vimrc: File.join(ENV['HOME'], '.vimrc')}
+      when /mswin(?!ce)|mingw|cygwin|bccwin/ then
+        {vimrc: File.join(ENV['HOME'], '_vimrc')}
+      end
+    end
+    
+    def initialize(script = Vimscript.new(self.class.default_config))
       @script = script
       begin
         self.script.exec('NeoBundleList')
