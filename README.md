@@ -80,7 +80,7 @@ $ neobundle clean
 
 #### list
 
-This command will enumerate the Vim plugins which is described the `vimrc`.
+This command will enumerate the Vim plugins by the NeoBundle which is described the `vimrc`.
 It equals the `:NeoBundleList` vim command.
 
 ```bash
