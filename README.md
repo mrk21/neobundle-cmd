@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Setting
 
-**1. Install the NeoBundle:**
+1\. Install the NeoBundle:
 
 ```bash
 $ mkdir -p ~/.vim/bundle
@@ -26,13 +26,22 @@ $ cd ~/.vim/bundle/
 $ git clone https://github.com/Shougo/neobundle.vim
 ```
 
-**2. Add the NeoBundle settings to the `~/.vimrc`:**
+2\. Add the NeoBundle settings to the `~/.vimrc`:
 
 ```VimL
 if has('vim_starting')
   set runtimepath+=~/.vim/bundle/neobundle.vim
   call neobundle#rc('~/.vim/bundle/')
 endif
+
+NeoBundle 'Shougo/vimproc.vim', {
+      \ 'build': {
+      \   'windows': 'make -f make_mingw32.mak',
+      \   'cygwin': 'make -f make_cygwin.mak',
+      \   'mac': 'make -f make_mac.mak',
+      \   'unix': 'make -f make_unix.mak',
+      \ },
+      \}
 
 NeoBundle 'Shougo/neocomplete.vim'
 NeoBundle 'Shougo/vimshell.vim'
@@ -53,7 +62,7 @@ $ neobundle [--help] [--version]
 
 #### install
 
-This command will install the vim plugins by the NeoBundle which is described the `~/.vimrc`.
+This command will install the Vim plugins by the NeoBundle which is described the `vimrc`.
 It equals the `:NeoBundleInstall` vim command.
 
 ```bash
@@ -62,7 +71,7 @@ $ neobundle install
 
 #### clean
 
-This command will delete the vim plugins which is unused.
+This command will delete the Vim plugins which is unused.
 It equals the `:NeoBundleClean!` vim command.
 
 ```bash
@@ -71,7 +80,7 @@ $ neobundle clean
 
 #### list
 
-This command will enumerate the vim plugins which is installed.
+This command will enumerate the Vim plugins which is described the .
 It equals the `:NeoBundleList` vim command.
 
 ```bash
