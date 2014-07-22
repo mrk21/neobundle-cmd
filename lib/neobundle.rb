@@ -10,6 +10,6 @@ module NeoBundle
   class VimCommandError < Error; def status; 6 end end
 end
 
-Dir['lib/neobundle/*.rb'].each do |rb|
+Dir[__FILE__.pathmap('%X/*.rb')].each do |rb|
   require rb.pathmap('%-1d/%n')
 end
