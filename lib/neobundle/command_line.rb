@@ -33,9 +33,28 @@ module NeoBundle
       }
       opt = OptionParser.new
       opt.version = NeoBundle::VERSION
+      opt.banner = <<-SH.gsub(/^( {2}){4}/,'')
+        Usage: neobundle [--help] [--version]
+                         [--vim=<path>] [--vimrc=<path>]
+                         <command>
+        
+        commands:
+                install:
+                        $ neobundle install
+                
+                clean:
+                        $ neobundle clean
+                
+                list:
+                        $ neobundle list
+        
+        options:
+      SH
+      
       opt.on('--vim=<path>','Path to the vim command.'){|v| @arguments[:config][:vim] = v}
       opt.on('--vimrc=<path>','Path to the vimrc.'){|v| @arguments[:config][:vimrc] = v}
       opt.order!(args)
+      
       command = args.shift.to_s.intern
       case command
       when :install, :clean, :list then
