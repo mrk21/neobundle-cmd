@@ -3,7 +3,27 @@ require 'stringio'
 
 module NeoBundle
   describe NeoBundle::Vimscript do
-    subject { Vimscript.new }
+    subject { Vimscript.new(self.config) }
+    let(:config){{}}
+    
+    it { expect{subject}.to_not raise_error }
+    
+    context 'when the vim command not found' do
+      let(:config){{vim: './not/existed/path'}}
+      it { expect{subject}.to raise_error(NeoBundle::VimCommandError, 'vim command not found!') }
+    end
+    
+    context 'when the command which is designated was not the "vim"' do
+      describe 'output' do
+        let(:config){{vim: './spec/fixtures/vim-command/non_vim.rb'}}
+        it { expect{subject}.to raise_error(NeoBundle::VimCommandError, 'command is not vim!') }
+      end
+      
+      describe 'status' do
+        let(:config){{vim: './spec/fixtures/vim-command/non_vim2.rb'}}
+        it { expect{subject}.to raise_error(NeoBundle::VimCommandError, 'command is not vim!') }
+      end
+    end
     
     describe '#exec(cmd[, io])' do
       subject { super().exec(self.cmd, self.io) }

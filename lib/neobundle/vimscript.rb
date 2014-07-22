@@ -8,6 +8,14 @@ module NeoBundle
         vimrc: 'NONE',
       }
       @config.merge!(config)
+      begin
+        result = %x[#{'%{vim} --version' % @config}]
+        unless result =~ /^VIM - Vi IMproved / and $? == 0 then
+          raise NeoBundle::VimCommandError, 'command is not vim!' 
+        end
+      rescue SystemCallError
+        raise NeoBundle::VimCommandError, 'vim command not found!'
+      end
     end
     
     def exec(cmd, io=nil)
