@@ -15,12 +15,20 @@ module NeoBundle
     
     context 'when the command which is designated was not the "vim"' do
       describe 'output' do
-        let(:config){{vim: './spec/fixtures/vim-command/non_vim.rb'}}
+        if ENV['OS'].nil?
+          let(:config){{vim: './spec/fixtures/vim-command/non_vim.rb'}}
+        else
+          let(:config){{vim: './spec/fixtures/vim-command/non_vim.bat'}}
+        end
         it { expect{subject}.to raise_error(NeoBundle::VimCommandError, 'command is not vim!') }
       end
       
       describe 'status' do
-        let(:config){{vim: './spec/fixtures/vim-command/non_vim2.rb'}}
+        if ENV['OS'].nil?
+          let(:config){{vim: './spec/fixtures/vim-command/non_vim2.rb'}}
+        else
+          let(:config){{vim: './spec/fixtures/vim-command/non_vim2.bat'}}
+        end
         it { expect{subject}.to raise_error(NeoBundle::VimCommandError, 'command is not vim!') }
       end
     end
@@ -30,7 +38,7 @@ module NeoBundle
       let(:cmd){'echo 1'}
       let(:io){nil}
       
-      it { is_expected.to eq('1') }
+      it { is_expected.to eq(ENV['OS'].nil? ? '1' : "\n1\n") }
       
       context 'when the `cmd` was empty' do
         ['""', 'nil', '" \n  "'].each do |empty_cmd|
@@ -56,7 +64,7 @@ module NeoBundle
         let(:cmd){'echo 1 | echo 2'}
         let(:io){StringIO.new('','r+')}
         
-        it { is_expected.to eq("1\n2\n") }
+        it { is_expected.to eq(ENV['OS'].nil? ? "1\n2\n" : "\n1\n\n2\n\n") }
       end
     end
   end

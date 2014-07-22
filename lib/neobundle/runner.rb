@@ -32,7 +32,7 @@ module NeoBundle
     end
     
     def install
-      dir = @script.exec('echo neobundle#get_neobundle_dir()')
+      dir = @script.exec('echo neobundle#get_neobundle_dir()').strip
       before = Dir['%s/*' % dir]
       @script.exec('NeoBundleInstall', $stdout)
       after = Dir['%s/*' % dir]
@@ -40,7 +40,7 @@ module NeoBundle
     end
     
     def clean
-      dir = @script.exec('echo neobundle#get_neobundle_dir()')
+      dir = @script.exec('echo neobundle#get_neobundle_dir()').strip
       before = Dir['%s/*' % dir]
       @script.exec('NeoBundleClean!', $stdout)
       after = Dir['%s/*' % dir]

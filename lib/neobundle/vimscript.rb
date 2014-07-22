@@ -11,8 +11,7 @@ module NeoBundle
       }
       @config.merge!(config)
       begin
-        vim = Shellwords.escape @config[:vim]
-        result = %x[#{vim} --version]
+        result = %x[#{'%{vim} --version' % self.escaped_config}]
         unless result =~ /^VIM - Vi IMproved / and $? == 0 then
           raise NeoBundle::VimCommandError, 'command is not vim!' 
         end
@@ -23,8 +22,8 @@ module NeoBundle
     
     def exec(cmd, io=nil)
       raise NeoBundle::VimscriptError, 'Command is empty!' if cmd.to_s.strip.empty?
-      command = (<<-SH % @config).gsub(/\s+/,' ').strip
-        '%{vim}' -u '%{vimrc}' -U NONE -i NONE -e -s -V1
+      command = (<<-SH % self.escaped_config).gsub(/\s+/,' ').strip
+        %{vim} -u %{vimrc} -U NONE -i NONE -e -s -V1
           -c "
             try |
               echo '#{MARK}' |
@@ -68,6 +67,15 @@ module NeoBundle
         raise NeoBundle::VimscriptError, result if process.value != 0
         result
       end
+    end
+    
+    protected
+    
+    def escaped_config
+      result = @config.clone
+      result[:vim] = Shellwords.escape result[:vim]
+      result[:vimrc] = Shellwords.escape result[:vimrc]
+      result
     end
   end
 end
