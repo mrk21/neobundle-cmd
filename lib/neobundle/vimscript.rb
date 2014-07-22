@@ -1,3 +1,5 @@
+require 'shellwords'
+
 module NeoBundle
   class Vimscript
     MARK = '[neobundle-cmd/vim-script/command-part]'
@@ -9,11 +11,12 @@ module NeoBundle
       }
       @config.merge!(config)
       begin
-        result = %x[#{'%{vim} --version' % @config}]
+        vim = Shellwords.escape @config[:vim]
+        result = %x[#{vim} --version]
         unless result =~ /^VIM - Vi IMproved / and $? == 0 then
           raise NeoBundle::VimCommandError, 'command is not vim!' 
         end
-      rescue SystemCallError
+      rescue SystemCallError 
         raise NeoBundle::VimCommandError, 'vim command not found!'
       end
     end
@@ -21,7 +24,7 @@ module NeoBundle
     def exec(cmd, io=nil)
       raise NeoBundle::VimscriptError, 'Command is empty!' if cmd.to_s.strip.empty?
       command = (<<-SH % @config).gsub(/\s+/,' ').strip
-        %{vim} -u %{vimrc} -U NONE -i NONE -e -s -V1
+        '%{vim}' -u '%{vimrc}' -U NONE -i NONE -e -s -V1
           -c "
             try |
               echo '#{MARK}' |
