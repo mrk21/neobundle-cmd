@@ -88,10 +88,12 @@ module NeoBundle
       
       before do
         ENV['NEOBUNDLE_CMD_VIM'] = nil
+        ENV['NEOBUNDLE_CMD_VIMRC'] = nil
       end
       
       after do
         ENV['NEOBUNDLE_CMD_VIM'] = nil
+        ENV['NEOBUNDLE_CMD_VIMRC'] = nil
       end
       
       context 'when the platform was "Mac OS X"' do
@@ -106,12 +108,13 @@ module NeoBundle
         context 'with options' do
           before do
             ENV['NEOBUNDLE_CMD_VIM'] = 'path/to/vim'
+            ENV['NEOBUNDLE_CMD_VIMRC'] = 'path/to/vimrc'
           end
           
           it do
             is_expected.to eq(
               vim: 'path/to/vim',
-              vimrc: File.expand_path('~/.vimrc')
+              vimrc: 'path/to/vimrc'
             )
           end
         end

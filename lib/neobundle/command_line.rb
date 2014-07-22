@@ -34,6 +34,7 @@ module NeoBundle
       opt = OptionParser.new
       opt.version = NeoBundle::VERSION
       opt.on('--vim=<path>','Path to the vim command.'){|v| @arguments[:config][:vim] = v}
+      opt.on('--vimrc=<path>','Path to the vimrc.'){|v| @arguments[:config][:vimrc] = v}
       opt.order!(args)
       command = args.shift.to_s.intern
       case command
