@@ -104,7 +104,7 @@ The default value is shown below:
 | platform | value |
 | -------- | ----- |
 | Mac OS X and Linux | $HOME/.vimrc |
-| Windows | %HOME%\\\_vimrc |
+| Windows | %USERPROFILE%\\\_vimrc |
 
 Also, this value is able to overriden by the `NEOBUNDLE_CMD_VIMRC` environment variable.
 
