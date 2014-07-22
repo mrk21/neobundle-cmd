@@ -1,4 +1,4 @@
-# NeoBundle
+# NeoBundle CMD
 
 [NeoBundle](https://github.com/Shougo/neobundle.vim "Shougo/neobundle.vim") command line tools.
 
