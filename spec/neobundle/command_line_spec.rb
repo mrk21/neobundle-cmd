@@ -89,12 +89,12 @@ module NeoBundle
       
       context 'when the `NeoBundle::Error` was thrown' do
         let(:exception){raise NeoBundle::VimscriptError, 'VimscriptError message'}
-        it { expect(subject[0]).to eq(2) }
+        it { expect(subject[0]).to eq(1) }
         it { expect(subject[1]).to eq('VimscriptError message') }
         
         context 'when the `NeoBundle::Error` was thrown' do
           let(:exception){raise NeoBundle::OperationAlreadyCompletedError, 'OperationAlreadyCompletedError'}
-          it { expect(subject[0]).to eq(4) }
+          it { expect(subject[0]).to eq(2) }
           it { expect(subject[1]).to eq('') }
         end
       end
@@ -107,7 +107,7 @@ module NeoBundle
       
       context 'when the unknown exception was thrown' do
         let(:exception){raise StandardError, 'StandardError message'}
-        it { expect(subject[0]).to eq(255) }
+        it { expect(subject[0]).to eq(1) }
         it { expect(subject[1]).to match(/^#<StandardError: StandardError message>/) }
       end
     end

@@ -18,7 +18,7 @@ module NeoBundle
     
     context 'when the NeoBundle was not installed' do
       let(:script){Vimscript.new(bundlefile: './spec/fixtures/vimrc/base.vim')}
-      it { expect{subject}.to raise_error(NeoBundle::NeoBundleNotFoundError, 'NeoBundle not found!') }
+      it { expect{subject}.to raise_error(NeoBundle::NeoBundleError, 'NeoBundle not found!') }
     end
     
     describe '#install()' do

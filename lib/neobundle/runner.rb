@@ -24,7 +24,7 @@ module NeoBundle
       begin
         self.script.exec('NeoBundleList')
       rescue NeoBundle::VimscriptError
-        raise NeoBundle::NeoBundleNotFoundError, 'NeoBundle not found!'
+        raise NeoBundle::NeoBundleError, 'NeoBundle not found!'
       end
     end
     
