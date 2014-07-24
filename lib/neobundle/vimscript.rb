@@ -55,6 +55,7 @@ module NeoBundle
       
       stderr.each_line do |line|
         line = line.chomp
+        next if line.empty?
         io.puts line unless io.nil?
         result.push line
       end

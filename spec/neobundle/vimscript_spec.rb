@@ -38,7 +38,7 @@ module NeoBundle
       let(:cmd){'echo 1'}
       let(:io){nil}
       
-      it { is_expected.to eq(ENV['OS'].nil? ? '1' : "\n1\n") }
+      it { is_expected.to eq('1') }
       
       context 'when the `cmd` was empty' do
         ['""', 'nil', '" \n  "'].each do |empty_cmd|
@@ -102,7 +102,7 @@ module NeoBundle
         let(:cmd){'echo 1 | echo 2'}
         let(:io){StringIO.new('','r+')}
         
-        it { is_expected.to eq(ENV['OS'].nil? ? "1\n2\n" : "\n1\n\n2\n\n") }
+        it { is_expected.to eq("1\n2\n") }
       end
     end
   end
