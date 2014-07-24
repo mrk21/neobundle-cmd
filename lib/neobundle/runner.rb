@@ -7,14 +7,14 @@ module NeoBundle
     def self.default_config(platform = RUBY_PLATFORM)
       config = {
         vim: ENV['NEOBUNDLE_CMD_VIM'] || 'vim',
-        vimrc: ENV['NEOBUNDLE_CMD_VIMRC'],
+        bundlefile: ENV['NEOBUNDLE_CMD_BUNDLEFILE'],
         verbose: 0,
       }
       case platform
       when /darwin/,/linux/ then
-        config[:vimrc] ||= File.join(ENV['HOME'], '.vimrc')
+        config[:bundlefile] ||= File.join(ENV['HOME'], '.vimrc')
       when /mswin(?!ce)|mingw|cygwin|bccwin/ then
-        config[:vimrc] ||= File.join(ENV['HOME'], '_vimrc')
+        config[:bundlefile] ||= File.join(ENV['HOME'], '_vimrc')
       end
       config
     end

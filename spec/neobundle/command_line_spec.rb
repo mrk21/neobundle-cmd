@@ -40,14 +40,14 @@ module NeoBundle
       end
       
       describe 'options' do
-        let(:args){'--vim=path1 --vimrc=path3 --verbose=1 install -V 2 --vimrc=path4 --vim=path2'}
+        let(:args){'--vim=path1 --bundlefile=path3 --verbose=1 install -V 2 -f path4 -c path2'}
         
         it do
           is_expected.to eq(
             command: :install,
             config: {
               vim: 'path2',
-              vimrc: 'path4',
+              bundlefile: 'path4',
               verbose: 2,
             }
           )

@@ -8,7 +8,7 @@ module NeoBundle
     def initialize(config={})
       @config = {
         vim: 'vim',
-        vimrc: nil,
+        bundlefile: nil,
         verbose: 0,
       }
       @config.merge!(config)
@@ -31,9 +31,9 @@ module NeoBundle
       command = ERB.new(<<-SH).result(binding).gsub(/\s+/,' ').strip
         <%= Shellwords.escape @config[:vim] %> -u NONE -U NONE -i NONE -N -e -s -V1
           --cmd "
-            <% unless @config[:vimrc].to_s.strip.empty? then %>
+            <% unless @config[:bundlefile].to_s.strip.empty? then %>
               set verbosefile=<%= log_file.path %> |
-              <%= @config[:verbose] %>verbose source <%= @config[:vimrc] %> |
+              <%= @config[:verbose] %>verbose source <%= @config[:bundlefile] %> |
               set verbosefile= |
             <% end %>
             <%= cmd %>

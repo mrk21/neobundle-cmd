@@ -64,7 +64,7 @@ module NeoBundle
         let(:config) do
           {
             verbose: self.verbose_level,
-            vimrc: './spec/fixtures/vimrc/echo_log.vim'
+            bundlefile: './spec/fixtures/vimrc/echo_log.vim'
           }
         end
         

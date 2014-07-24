@@ -35,7 +35,7 @@ module NeoBundle
       opt.version = NeoBundle::VERSION
       opt.banner = <<-SH.gsub(/^( {2}){4}/,'')
         Usage: neobundle [--help] [--version]
-                         [--vim=<path>] [--vimrc=<path>] [--verbose=<level>]
+                         [--vim=<path>] [--bundlefile=<path>] [--verbose=<level>]
                          <command>
         
         commands:
@@ -51,12 +51,21 @@ module NeoBundle
         options:
       SH
       
-      opt.on('--vim=<path>','Path to the vim command.'){|v| @arguments[:config][:vim] = v}
-      opt.on('--vimrc=<path>','Path to the vimrc.'){|v| @arguments[:config][:vimrc] = v}
-      opt.on('-V <level>','--verbose=<level>','Show the bundle file logs.'){|v| @arguments[:config][:verbose] = v.to_i}
-      opt.order!(args)
+      opt.on('-c <path>', '--vim=<path>', String, 'Path to the vim command.') do |v|
+        @arguments[:config][:vim] = v
+      end
       
+      opt.on('-f <path>', '--bundlefile=<path>', String, 'Path to the bundle file.') do |v|
+        @arguments[:config][:bundlefile] = v
+      end
+      
+      opt.on('-V <level>', '--verbose=<level>', Integer, 'Show the detail log.') do |v|
+        @arguments[:config][:verbose] = v
+      end
+      
+      opt.order!(args)
       command = args.shift.to_s.intern
+      
       case command
       when :install, :clean, :list then
         @arguments[:command] = command

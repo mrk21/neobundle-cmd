@@ -4,7 +4,7 @@ module NeoBundle
   describe NeoBundle::Runner do
     subject { Runner.new({}, self.script) }
     
-    let(:script){Vimscript.new(vimrc: './spec/fixtures/vimrc/with_neobundle.vim')}
+    let(:script){Vimscript.new(bundlefile: './spec/fixtures/vimrc/with_neobundle.vim')}
     
     before do
       ENV['_neobundle_root'] = Dir.pwd
@@ -17,7 +17,7 @@ module NeoBundle
     it { expect{subject}.to_not raise_error }
     
     context 'when the NeoBundle was not installed' do
-      let(:script){Vimscript.new(vimrc: './spec/fixtures/vimrc/base.vim')}
+      let(:script){Vimscript.new(bundlefile: './spec/fixtures/vimrc/base.vim')}
       it { expect{subject}.to raise_error(NeoBundle::NeoBundleNotFoundError, 'NeoBundle not found!') }
     end
     
@@ -88,12 +88,12 @@ module NeoBundle
       
       before do
         ENV['NEOBUNDLE_CMD_VIM'] = nil
-        ENV['NEOBUNDLE_CMD_VIMRC'] = nil
+        ENV['NEOBUNDLE_CMD_BUNDLEFILE'] = nil
       end
       
       after do
         ENV['NEOBUNDLE_CMD_VIM'] = nil
-        ENV['NEOBUNDLE_CMD_VIMRC'] = nil
+        ENV['NEOBUNDLE_CMD_BUNDLEFILE'] = nil
       end
       
       context 'when the platform was "Mac OS X"' do
@@ -101,7 +101,7 @@ module NeoBundle
         it do
           is_expected.to eq(
             vim: 'vim',
-            vimrc: File.expand_path('~/.vimrc'),
+            bundlefile: File.expand_path('~/.vimrc'),
             verbose: 0,
           )
         end
@@ -109,13 +109,13 @@ module NeoBundle
         context 'with options' do
           before do
             ENV['NEOBUNDLE_CMD_VIM'] = 'path/to/vim'
-            ENV['NEOBUNDLE_CMD_VIMRC'] = 'path/to/vimrc'
+            ENV['NEOBUNDLE_CMD_BUNDLEFILE'] = 'path/to/vimrc'
           end
           
           it do
             is_expected.to eq(
               vim: 'path/to/vim',
-              vimrc: 'path/to/vimrc',
+              bundlefile: 'path/to/vimrc',
               verbose: 0,
             )
           end
@@ -127,7 +127,7 @@ module NeoBundle
         it do
           is_expected.to eq(
             vim: 'vim',
-            vimrc: File.expand_path('~/.vimrc'),
+            bundlefile: File.expand_path('~/.vimrc'),
             verbose: 0,
           )
         end
@@ -138,7 +138,7 @@ module NeoBundle
         it do
           is_expected.to eq(
             vim: 'vim',
-            vimrc: File.expand_path('~/_vimrc'),
+            bundlefile: File.expand_path('~/_vimrc'),
             verbose: 0,
           )
         end
