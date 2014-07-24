@@ -101,7 +101,8 @@ module NeoBundle
         it do
           is_expected.to eq(
             vim: 'vim',
-            vimrc: File.expand_path('~/.vimrc')
+            vimrc: File.expand_path('~/.vimrc'),
+            verbose: 0,
           )
         end
         
@@ -114,7 +115,8 @@ module NeoBundle
           it do
             is_expected.to eq(
               vim: 'path/to/vim',
-              vimrc: 'path/to/vimrc'
+              vimrc: 'path/to/vimrc',
+              verbose: 0,
             )
           end
         end
@@ -125,7 +127,8 @@ module NeoBundle
         it do
           is_expected.to eq(
             vim: 'vim',
-            vimrc: File.expand_path('~/.vimrc')
+            vimrc: File.expand_path('~/.vimrc'),
+            verbose: 0,
           )
         end
       end
@@ -135,7 +138,8 @@ module NeoBundle
         it do
           is_expected.to eq(
             vim: 'vim',
-            vimrc: File.expand_path('~/_vimrc')
+            vimrc: File.expand_path('~/_vimrc'),
+            verbose: 0,
           )
         end
       end

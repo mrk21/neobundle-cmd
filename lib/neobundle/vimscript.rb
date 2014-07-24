@@ -1,18 +1,20 @@
 require 'shellwords'
+require 'open3'
+require 'tempfile'
+require 'erb'
 
 module NeoBundle
   class Vimscript
-    MARK = '[neobundle-cmd/vim-script/command-part]'
-    
     def initialize(config={})
       @config = {
         vim: 'vim',
-        vimrc: 'NONE',
+        vimrc: nil,
+        verbose: 0,
       }
       @config.merge!(config)
       begin
-        result = %x[#{'%{vim} --version' % self.escaped_config}]
-        unless result =~ /^VIM - Vi IMproved / and $? == 0 then
+        out, err, status = Open3.capture3('%s --version' % Shellwords.escape(@config[:vim]))
+        unless out =~ /^VIM - Vi IMproved / and status == 0 then
           raise NeoBundle::VimCommandError, 'command is not vim!' 
         end
       rescue SystemCallError 
@@ -22,59 +24,48 @@ module NeoBundle
     
     def exec(cmd, io=nil)
       raise NeoBundle::VimscriptError, 'Command is empty!' if cmd.to_s.strip.empty?
-      command = (<<-SH % self.escaped_config).gsub(/\s+/,' ').strip
-        %{vim} -u %{vimrc} -U NONE -i NONE -e -s -V1
-          -c "
-            try |
-              echo '#{MARK}' |
-              #{cmd} |
-              echo '#{MARK}' |
-              echo '' |
-            finally |
-              q! |
-            endtry
+      is_displaying_log = @config[:verbose] > 0
+      $stderr.puts '### Command: %s' % cmd if is_displaying_log
+      
+      log_file = Tempfile.open('neobundle-cmd_vimscript_exec')
+      command = ERB.new(<<-SH).result(binding).gsub(/\s+/,' ').strip
+        <%= Shellwords.escape @config[:vim] %> -u NONE -U NONE -i NONE -N -e -s -V1
+          --cmd "
+            <% unless @config[:vimrc].to_s.strip.empty? then %>
+              set verbosefile=<%= log_file.path %> |
+              <%= @config[:verbose] %>verbose source <%= @config[:vimrc] %> |
+              set verbosefile= |
+            <% end %>
+            <%= cmd %>
           "
-          -c "
-            echo '#{MARK}' |
-            echo '' |
-            q
+          --cmd "
+            qall!
           "
       SH
-      r,w = IO.pipe
-      process = Process.detach spawn(command, out: w, err: w)
       
-      Thread.new do
-        process.join
-        r.close
-        w.close
-      end
-      
-      begin
-        result = []
-        is_outputting = false
-        
-        loop do
-          line = r.gets.rstrip
-          if line == MARK then
-            is_outputting = !is_outputting
-          elsif is_outputting then
-            io.puts line unless io.nil?
-            result.push line
-          end
+      log_thread = Thread.new do
+        while true do
+          line = log_file.gets.to_s.chomp
+          $stderr.puts line unless line.empty?
         end
-      rescue IOError
-        result = result.join("\n")
-        raise NeoBundle::VimscriptError, result if process.value != 0
-        result
       end
-    end
-    
-    protected
-    
-    def escaped_config
-      result = @config.clone
-      result[:vim] = Shellwords.escape result[:vim]
-      result[:vimrc] = Shellwords.escape result[:vimrc]
+      
+      stdin, stdout, stderr, process = Open3.popen3(command)
+      result = []
+      
+      stderr.each_line do |line|
+        line = line.chomp
+        io.puts line unless io.nil?
+        result.push line
+      end
+      
+      process.join
+      log_thread.kill
+      log_file.close
+      $stderr.print "\n\n" if is_displaying_log
+      
+      result = result.join("\n")
+      raise NeoBundle::VimscriptError, result if process.value != 0
       result
     end
   end

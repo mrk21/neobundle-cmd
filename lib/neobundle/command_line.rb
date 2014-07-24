@@ -35,7 +35,7 @@ module NeoBundle
       opt.version = NeoBundle::VERSION
       opt.banner = <<-SH.gsub(/^( {2}){4}/,'')
         Usage: neobundle [--help] [--version]
-                         [--vim=<path>] [--vimrc=<path>]
+                         [--vim=<path>] [--vimrc=<path>] [--verbose=<level>]
                          <command>
         
         commands:
@@ -53,6 +53,7 @@ module NeoBundle
       
       opt.on('--vim=<path>','Path to the vim command.'){|v| @arguments[:config][:vim] = v}
       opt.on('--vimrc=<path>','Path to the vimrc.'){|v| @arguments[:config][:vimrc] = v}
+      opt.on('-V <level>','--verbose=<level>','Show the bundle file logs.'){|v| @arguments[:config][:verbose] = v.to_i}
       opt.order!(args)
       
       command = args.shift.to_s.intern

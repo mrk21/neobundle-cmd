@@ -54,6 +54,44 @@ module NeoBundle
         it { expect{subject}.to raise_error(NeoBundle::VimscriptError, /E492:/) }
       end
       
+      describe 'bundle file output' do
+        subject do
+          super()
+          self.verbose_io.rewind
+          self.verbose_io.read.chomp
+        end
+        
+        let(:config) do
+          {
+            verbose: self.verbose_level,
+            vimrc: './spec/fixtures/vimrc/echo_log.vim'
+          }
+        end
+        
+        let(:verbose_level){0}
+        let(:verbose_io){StringIO.new('','r+')}
+        let(:message){'echo message'}
+        
+        before do
+          $stderr = self.verbose_io
+          ENV['_neobundle_root'] = Dir.pwd
+          ENV['_neobundle_echo_message'] = self.message
+        end
+        
+        after do
+          $stderr = STDERR
+          ENV['_neobundle_root'] = nil
+          ENV['_neobundle_echo_message'] = nil
+        end
+        
+        it { is_expected.to eq(self.message) }
+        
+        context 'when verbose level was 1' do
+          let(:verbose_level){1}
+          it { is_expected.to eq(['### Command: %s' % self.cmd, self.message, "\n"].join("\n")) }
+        end
+      end
+      
       describe 'IO output' do
         subject do
           super()

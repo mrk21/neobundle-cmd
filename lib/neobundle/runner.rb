@@ -8,6 +8,7 @@ module NeoBundle
       config = {
         vim: ENV['NEOBUNDLE_CMD_VIM'] || 'vim',
         vimrc: ENV['NEOBUNDLE_CMD_VIMRC'],
+        verbose: 0,
       }
       case platform
       when /darwin/,/linux/ then
