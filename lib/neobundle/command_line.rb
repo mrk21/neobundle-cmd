@@ -47,20 +47,33 @@ module NeoBundle
                 
                 list:
                         $ neobundle list
+                
+                help:
+                        $ neobundle help
         
         options:
       SH
       
-      opt.on('-c <path>', '--vim=<path>', String, 'Path to the vim command.') do |v|
+      opt.on('-c <path>', '--vim=<path>', String, 'Path to the vim command') do |v|
         @arguments[:config][:vim] = v
       end
       
-      opt.on('-f <path>', '--bundlefile=<path>', String, 'Path to the bundle file.') do |v|
+      opt.on('-f <path>', '--bundlefile=<path>', String, 'Path to the bundle file') do |v|
         @arguments[:config][:bundlefile] = v
       end
       
-      opt.on('-V <level>', '--verbose=<level>', Integer, 'Show the detail log.') do |v|
+      opt.on('-V <level>', '--verbose=<level>', Integer, 'Show the detail log') do |v|
         @arguments[:config][:verbose] = v
+      end
+      
+      opt.on_tail('-h', '--help', 'Show this message') do
+        puts opt
+        exit
+      end
+      
+      opt.on_tail('-v', '--version', 'Show version') do
+        puts opt.ver
+        exit
       end
       
       opt.order!(args)
@@ -69,9 +82,9 @@ module NeoBundle
       case command
       when :install, :clean, :list then
         @arguments[:command] = command
-        opt.parse!(args)
+        opt.permute!(args)
       when :'', :help then
-        opt.parse(['--help'])
+        opt.permute(['--help'])
       else
         raise NeoBundle::CommandLineError, 'Invalid command: %s' % command
       end

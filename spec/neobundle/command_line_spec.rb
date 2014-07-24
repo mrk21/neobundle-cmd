@@ -31,7 +31,7 @@ module NeoBundle
         before { $stderr = $stdout = StringIO.new }
         after { $stderr = STDERR; $stdout = STDOUT }
         
-        ['', 'help', '--help', '-h', '--version'].each do |args|
+        ['', 'help', '--help', '-h', '--version', '-h'].each do |args|
           describe '"%s"' % args do
             let(:args){args}
             it { expect{subject}.to raise_error(SystemExit) }
