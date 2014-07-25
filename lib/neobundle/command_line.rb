@@ -31,60 +31,16 @@ module NeoBundle
         command: nil,
         config: {}
       }
-      opt = OptionParser.new
-      opt.version = NeoBundle::VERSION
-      opt.banner = <<-SH.gsub(/^( {2}){4}/,'')
-        Usage: neobundle [--help] [--version]
-                         [--vim=<path>] [--bundlefile=<path>] [--verbose=<level>]
-                         <command>
-        
-        commands:
-                install:
-                        $ neobundle install
-                
-                clean:
-                        $ neobundle clean
-                
-                list:
-                        $ neobundle list
-                
-                help:
-                        $ neobundle help
-        
-        options:
-      SH
-      
-      opt.on('-c <path>', '--vim=<path>', String, 'Path to the vim command') do |v|
-        @arguments[:config][:vim] = v
-      end
-      
-      opt.on('-f <path>', '--bundlefile=<path>', String, 'Path to the bundle file') do |v|
-        @arguments[:config][:bundlefile] = v
-      end
-      
-      opt.on('-V <level>', '--verbose=<level>', Integer, 'Show the detail log') do |v|
-        @arguments[:config][:verbose] = v
-      end
-      
-      opt.on_tail('-h', '--help', 'Show this message') do
-        puts opt
-        exit
-      end
-      
-      opt.on_tail('-v', '--version', 'Show version') do
-        puts opt.ver
-        exit
-      end
-      
-      opt.order!(args)
+      parser = self.option_parser
+      parser.order!(args)
       command = args.shift.to_s.intern
       
       case command
       when :install, :clean, :list then
         @arguments[:command] = command
-        opt.permute!(args)
+        parser.permute!(args)
       when :'', :help then
-        opt.permute(['--help'])
+        parser.permute(['--help'])
       else
         raise NeoBundle::CommandLineError, 'Invalid command: %s' % command
       end
@@ -95,6 +51,111 @@ module NeoBundle
     def execute
       runner = Runner.new(self.arguments[:config])
       runner.send(self.arguments[:command])
+    end
+    
+    protected
+    
+    def option_parser
+      desc = lambda do |str|
+        lines = str.split(/\n/)
+        indent = lines.map{|v| v.match(/^ +/).to_a[0].to_s.length}.min
+        lines.map{|v| v[indent..-1].rstrip}.join("\n")
+      end
+      
+      summary = lambda do |parser, name, description, pos|
+        result = ' '*100
+        result[0] = name.to_s
+        result[pos+1] = desc[description]
+        result = parser.summary_indent + result.rstrip
+        parser.separator result
+      end
+      
+      parser = OptionParser.new
+      parser.summary_indent = ' '*3
+      parser.summary_width = 25
+      parser.version = NeoBundle::VERSION
+      parser.banner = desc[<<-DESC]
+        Usage: neobundle [--help] [--version]
+                         [--vim=<path>] [--bundlefile=<path>] [--verbose=<level>]
+                         <command>
+      DESC
+      
+      parser.separator ''
+      parser.separator 'commands:'
+      begin
+        pos = 9
+        
+        summary[parser, :install, <<-DESC, pos]
+          Install the Vim plugins
+        DESC
+        
+        summary[parser, :clean, <<-DESC, pos]
+          Delete the unused Vim plugins
+        DESC
+        
+        summary[parser, :list, <<-DESC, pos]
+          Enumerate the Vim plugins
+        DESC
+        
+        summary[parser, :help, <<-DESC, pos]
+          Show this message
+        DESC
+      end
+      
+      parser.separator ''
+      parser.separator 'options:'
+      begin
+        parser.on('-c <path>', '--vim=<path>', String, desc[<<-DESC]) do |v|
+          Path to the vim command
+        DESC
+          @arguments[:config][:vim] = v
+        end
+        
+        parser.on('-f <path>', '--bundlefile=<path>', String, desc[<<-DESC]) do |v|
+          Path to the bundle file
+        DESC
+          @arguments[:config][:bundlefile] = v
+        end
+        
+        parser.on('-V <level>', '--verbose=<level>', Integer, desc[<<-DESC]) do |v|
+          Show the detail log
+        DESC
+          @arguments[:config][:verbose] = v
+        end
+      end
+      
+      parser.separator ''
+      begin
+        parser.on('-h', '--help', 'Show this message') do
+          puts parser.help
+          exit
+        end
+        
+        parser.on('-v', '--version', 'Show version') do
+          puts parser.ver
+          exit
+        end
+      end
+      
+      parser.separator ''
+      parser.separator 'return value:'
+      begin
+        pos = 3
+        
+        summary[parser, '0', <<-DESC, pos]
+          Success
+        DESC
+        
+        summary[parser, '1', <<-DESC, pos]
+          Error
+        DESC
+        
+        summary[parser, '2', <<-DESC, pos]
+          No operation
+        DESC
+      end
+      
+      return parser
     end
   end
 end
