@@ -63,7 +63,7 @@ $ neobundle [--help] [--version]
 #### install
 
 This command will install the Vim plugins by the NeoBundle which is described the bundle file.
-It equals the `:NeoBundleInstall` vim command.
+It equals the `:NeoBundleInstall` Vim command.
 
 ```bash
 $ neobundle install
@@ -72,7 +72,7 @@ $ neobundle install
 #### clean
 
 This command will delete the Vim plugins which is unused.
-It equals the `:NeoBundleClean!` vim command.
+It equals the `:NeoBundleClean!` Vim command.
 
 ```bash
 $ neobundle clean
@@ -81,7 +81,7 @@ $ neobundle clean
 #### list
 
 This command will enumerate the Vim plugins by the NeoBundle which is described the bundle file.
-It equals the `:NeoBundleList` vim command.
+It equals the `:NeoBundleList` Vim command.
 
 ```bash
 $ neobundle list
@@ -91,7 +91,7 @@ $ neobundle list
 
 #### --vim
 
-This option designates the vim command location.
+This option designates the `vim` command location.
 
 ```bash
 -c <path>, --vim=<path>
