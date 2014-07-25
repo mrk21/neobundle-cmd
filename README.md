@@ -54,7 +54,7 @@ The structure of the command line is shown below:
 
 ```bash
 $ neobundle [--help] [--version]
-            [--vim=<path>] [--vimrc=<path>]
+            [--vim=<path>] [--bundlefile=<path>] [--verbose=<level>]
             <command>
 ```
 
@@ -62,7 +62,7 @@ $ neobundle [--help] [--version]
 
 #### install
 
-This command will install the Vim plugins by the NeoBundle which is described the `vimrc`.
+This command will install the Vim plugins by the NeoBundle which is described the bundle file.
 It equals the `:NeoBundleInstall` vim command.
 
 ```bash
@@ -80,7 +80,7 @@ $ neobundle clean
 
 #### list
 
-This command will enumerate the Vim plugins by the NeoBundle which is described the `vimrc`.
+This command will enumerate the Vim plugins by the NeoBundle which is described the bundle file.
 It equals the `:NeoBundleList` vim command.
 
 ```bash
@@ -94,18 +94,18 @@ $ neobundle list
 This option designates the vim command location.
 
 ```bash
---vim=<path>
+-c <path>, --vim=<path>
 ```
 
 The default value is `vim`, and this case is searched from the `PATH` environment variable by the system.
 Also, this value is able to overriden by the `NEOBUNDLE_CMD_VIM` environment variable.
 
-#### --vimrc
+#### --bundlefile
 
-This option designates the vimrc location.
+This option designates the bundle file location.
 
 ```bash
---vimrc=<path>
+-f <path>, --bundlefile=<path>
 ```
 
 The default value is shown below:
@@ -115,7 +115,18 @@ The default value is shown below:
 | Mac OS X and Linux | $HOME/.vimrc |
 | Windows | %USERPROFILE%\\\_vimrc |
 
-Also, this value is able to overriden by the `NEOBUNDLE_CMD_VIMRC` environment variable.
+Also, this value is able to overriden by the `NEOBUNDLE_CMD_BUNDLEFILE` environment variable.
+
+#### --verbose
+
+This option is the Vim script log level. In the ordinary, do not need to use this option,
+but for example, when wanted to trace the errors of the bundle file, this option will assist.
+
+```bash
+-V <level>, --verbose=<level>
+```
+
+The default value is 0.
 
 ## Contributing
 
