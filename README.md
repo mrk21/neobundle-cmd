@@ -128,6 +128,18 @@ but for example, when wanted to trace the errors of the bundle file, this option
 
 The default value is 0.
 
+### return value
+
+This command return value is listed below:
+
+| value | state |
+| ----- | ----- |
+| 0 | Success |
+| 1 | Error |
+| 2 | No operation |
+
+*NOTE: The "No operation" return value will be returned when the command of the `install` or `clean` did nothing.*
+
 ## Contributing
 
 1. Fork it ( https://github.com/mrk21/neobundle-cmd/fork )
